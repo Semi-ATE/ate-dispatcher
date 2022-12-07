@@ -227,7 +227,7 @@ class ATEDispatcher(threading.Thread):
                 missing -= 1
                 pending_status['missing'] = missing
                 if missing == 0:
-                    self.pending_responses.pop(uuid)
+                    self.pending_responses.pop(uuid, None)
 
     def stop(self):
         """
