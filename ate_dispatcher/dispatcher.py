@@ -45,7 +45,6 @@ class ResultListener(threading.Thread):
     def __init__(self):
         super().__init__()
         self._listener_queue = Queue()
-        self.start()
 
     def run(self) -> None:
         while True:
@@ -105,7 +104,6 @@ class Producer(threading.Thread):
     def __init__(self):
         super().__init__()
         self._producer_queue = Queue()
-        self.start()
 
     def run(self):
         while True:
@@ -177,7 +175,6 @@ class ATEDispatcher(threading.Thread):
         self.evt_producers: Dict[str, Set[Producer]] = {}
         self.pending_responses: Dict[str, PendingMessage] = {}
         self.queue = Queue()
-        self.start()
 
     def run(self):
         while True:
@@ -258,6 +255,21 @@ class ATEDispatcher(threading.Thread):
         topic_listeners |= {listener}
         self.evt_result_listeners[topic] = topic_listeners
 
+    def deregister_result_listener(self, listener: ResultListener, topic: str):
+        """
+        Deregister a result listener on a given topic.
+
+        Parameters
+        ----------
+        listener: ResultListener
+            The result listener to deregister.
+        topic: str
+            The topic on which the result listener was registered.
+        """
+        topic_listeners = self.evt_result_listeners.get(topic, set({}))
+        topic_listeners -= {listener}
+        self.evt_result_listeners[topic] = topic_listeners
+
     def register_result_producer(self, producer: Producer, topic: str):
         """
         Register a result producer on a given topic.
@@ -272,3 +284,43 @@ class ATEDispatcher(threading.Thread):
         producers = self.evt_producers.get(topic, set({}))
         producers |= {producer}
         self.evt_producers[topic] = producers
+
+    def deregister_result_producer(self, producer: Producer, topic: str):
+        """
+        Deregister a result producer on a given topic.
+
+        Parameters
+        ----------
+        producer: Producer
+            The producer to deregister.
+        topic: str
+            The topic on which the producer was registered.
+        """
+        producers = self.evt_producers.get(topic, set({}))
+        producers -= {producer}
+        self.evt_producers[topic] = producers
+
+    def send_request(self, topic: str, *args, ttl: float = 5000, **kwargs):
+        """
+        Send a request to all result producers registered on a given topic.
+
+        Parameters
+        ----------
+        topic: str
+            The identifier of the topic to request results on.
+        args: tuple
+            Positional arguments to pass to the call.
+        ttl: float
+            Maximum timeout to obtain responses.
+        kwargs: dict
+            Optional arguments dictionary to pass to the call.
+
+        Notes
+        -----
+        The responses will be dispatched to the listeners registered on the
+        given topic.
+        """
+        kwargs['ttl'] = ttl
+        msg = QueueMsg(kind='request', topic=topic, args=args, kwargs=kwargs,
+                       uuid=None, reply_to=None)
+        self.queue.put(msg)
