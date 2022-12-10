@@ -1,0 +1,48 @@
+name: Unit tests
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+jobs:
+    linux:
+        name: Py${{ matrix.PYTHON_VERSION }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        env:
+            PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
+            RUNNER_OS: "linux"
+            PYWINPTY_BLOCK: "1"
+            CI_RUNNING: "1"
+        strategy:
+            fail-fast: false
+            matrix:
+                PYTHON_VERSION: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        steps:
+            - name: Checkout branch
+              uses: actions/checkout@v3
+            - name: Install miniconda
+              uses: conda-incubator/setup-miniconda@v2
+              with:
+                auto-update-conda: true
+                activate-environment: test
+                channels: conda-forge,defaults
+                python-version: ${{ matrix.PYTHON_VERSION }}
+            - name: Conda env info
+              shell: bash -l {0}
+              run: conda env list
+            - name: Install build/test dependencies
+              shell: bash -l {0}
+              run: pip install pytest pytest-lazy-fixture flaky pytest-cov
+            - name: Run tests
+              shell: pwsh
+              run: pytest -x -v --cov=ate_dispatcher ate_dispatcher/tests
+            - name: Upload coverage results
+              uses: codecov/codecov-action@v3
+              with:
+                token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+                flags: unittests # optional
+                verbose: true # optional (default = false)
