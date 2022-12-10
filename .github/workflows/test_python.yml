@@ -36,7 +36,7 @@ jobs:
               run: conda env list
             - name: Install build/test dependencies
               shell: bash -l {0}
-              run: pip install pytest pytest-lazy-fixture flaky pytest-cov
+              run: pip install pytest pytest-lazy-fixture flaky pytest-cov typing-extensions
             - name: Run tests
               shell: pwsh
               run: pytest -x -v --cov=ate_dispatcher ate_dispatcher/tests
