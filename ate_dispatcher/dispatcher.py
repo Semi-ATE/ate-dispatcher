@@ -6,14 +6,17 @@ import time
 import threading
 from uuid import uuid4
 from queue import Queue
-from typing import Any, Dict, Set, Optional, Tuple, Literal
+from typing import Any, Dict, Set, Optional, Tuple
 
 if sys.version_info >= (3, 8):
-    from typing import TypedDict
+    from typing import TypedDict, Literal
 else:
-    from typing_extensions import TypedDict
+    from typing_extensions import TypedDict, Literal
 
-from typing_extensions import NotRequired
+if sys.version_info >= (3, 11):
+    from typing import NotRequired
+else:
+    from typing_extensions import NotRequired
 
 
 class QueueMsg(TypedDict):
