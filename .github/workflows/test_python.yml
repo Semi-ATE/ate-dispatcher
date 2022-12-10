@@ -40,6 +40,9 @@ jobs:
             - name: Run tests
               shell: pwsh
               run: pytest -x -v --cov=ate_dispatcher ate_dispatcher/tests
+            - name: Gather coverage results
+              shell: bash -l {0}
+              run: coverage lcov
             - name: Upload coverage results
               uses: codecov/codecov-action@v3
               with:
