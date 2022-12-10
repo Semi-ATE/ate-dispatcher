@@ -7,6 +7,7 @@
 [![Downloads](https://pepy.tech/badge/ate-dispatcher)](https://pepy.tech/project/ate-dispatcher)
 [![PyPI status](https://img.shields.io/pypi/status/ate-dispatcher.svg)](https://github.com/Semi-ATE/ate-dispatcher)
 [![Unit tests](https://github.com/Semi-ATE/ate-dispatcher/actions/workflows/test_python.yml/badge.svg)](https://github.com/Semi-ATE/ate-dispatcher/actions/workflows/test_python.yml)
+[![codecov](https://codecov.io/gh/Semi-ATE/ate-dispatcher/branch/main/graph/badge.svg?token=5MLBM0PHLL)](https://codecov.io/gh/Semi-ATE/ate-dispatcher)
 
 
 ## Overview
