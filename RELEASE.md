@@ -3,7 +3,7 @@ To release a new version of ate-dispatcher:
 1. git fetch upstream && git checkout upstream/main
 2. Close milestone on GitHub
 3. git clean -xfdi
-4. Update CHANGELOG.md with git-cliff
+4. Update CHANGELOG.md with git-cliff (git cliff --tag X.X.X)
 5. git add -A && git commit -m "Update Changelog"
 6. Update release version in ``__init__.py`` (set release version, remove 'dev')
 8. git add -A && git commit -m "Release vX.X.X"
