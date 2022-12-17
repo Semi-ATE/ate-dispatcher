@@ -15,3 +15,4 @@ To release a new version of ate-dispatcher:
 12. git push upstream main
 13. git push upstream --tags
 16. twine upload dist/*
+17. Draft new release in GitHub
